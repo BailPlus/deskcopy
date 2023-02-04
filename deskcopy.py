@@ -2,7 +2,7 @@
 #deskcopy 桌面拖入文件自动复制 v1.0_1
 #2022.11.18-2022.12.10
 
-TARGET = 'D:'
+TARGET = 'D:\\desktop'
 
 from tkinter import *
 import os,time,shutil
