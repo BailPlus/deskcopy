@@ -4,8 +4,7 @@
 
 TARGET = 'D:\\desktop'
 
-from tkinter import *
-import os,time,shutil
+import os,time,shutil,sys
 
 os.chdir(os.path.join(os.path.expanduser('~'),'Desktop'))
 filelst = os.listdir()
@@ -46,11 +45,7 @@ def main():
         target = os.path.join(TARGET,i)
         shutil.copy(i,target)
     print(f'已复制 at {time.time()}')
-    root.after(600000,main) #10min复制一次
-root = Tk()
-root.iconify()              #最小化
-root.overrideredirect(True) #隐藏任务栏
+    time.sleep(600 if len(sys.argv) == 1 else 5)    #如果传入参数就是调试模式，缩短间隔时间
 
 if __name__ == '__main__':
     main()
-    root.mainloop()
