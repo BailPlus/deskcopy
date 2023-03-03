@@ -40,12 +40,13 @@ def main():
     root.after(1000,main)
 """
 def main():
-    filelst = os.listdir()
-    for i in filelst:
-        target = os.path.join(TARGET,i)
-        shutil.copy(i,target)
-    print(f'已复制 at {time.time()}')
-    time.sleep(600 if len(sys.argv) == 1 else 5)    #如果传入参数就是调试模式，缩短间隔时间
+    while True:
+        filelst = os.listdir()
+        for i in filelst:
+            target = os.path.join(TARGET,i)
+            shutil.copy(i,target)
+        print(f'已复制 at {time.time()}')
+        time.sleep(600 if len(sys.argv) == 1 else 5)    #如果传入参数就是调试模式，缩短间隔时间
 
 if __name__ == '__main__':
     main()
