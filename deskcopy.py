@@ -44,8 +44,9 @@ def main():
         if is_file_number_change():
             filelst = os.listdir()
             for i in filelst:
-                target = os.path.join(TARGET,i)
-                shutil.copy(i,target)
+                if '.lnk' not in i:    #排除.lnk文件
+                    target = os.path.join(TARGET,i)
+                    shutil.copy(i,target)
             print(f'已复制 at {time.time()}')
         time.sleep(30 if len(sys.argv) == 1 else 1)    #如果传入参数就是调试模式，缩短间隔时间
 
