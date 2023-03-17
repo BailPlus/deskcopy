@@ -1,0 +1,4 @@
+5c5
+< TARGET = 'D:\\desktop'
+---
+> TARGET = '/tmp/desktop'
