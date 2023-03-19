@@ -40,14 +40,17 @@ def main():
     root.after(1000,main)
 """
 def main():
+    print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
     while True:
         if is_file_number_change():
-            filelst = os.listdir()
+            filelst = os.walk('.')
             for i in filelst:
-                if '.lnk' not in i:    #排除.lnk文件
-                    target = os.path.join(TARGET,i)
-                    shutil.copy(i,target)
-            print(f'已复制 at {time.time()}')
+                for j in i[2]:
+                    filename = os.path.join(i[0],j)
+                    if '.lnk' not in filename:    #排除.lnk文件
+                        target = os.path.join(TARGET,j)
+                        shutil.copy(i,target)
+                    print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
         time.sleep(30 if len(sys.argv) == 1 else 1)    #如果传入参数就是调试模式，缩短间隔时间
 
 if __name__ == '__main__':
