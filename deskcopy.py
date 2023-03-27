@@ -49,9 +49,9 @@ def main():
                     filename = os.path.join(i[0],j)
                     if '.lnk' not in filename:    #排除.lnk文件
                         target = os.path.join(TARGET,j)
-                        shutil.copy(i,target)
-                    print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
-        time.sleep(30 if len(sys.argv) == 1 else 1)    #如果传入参数就是调试模式，缩短间隔时间
+                        shutil.copy(filename,target)
+                        print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+        time.sleep(5 if len(sys.argv) == 1 else 1)    #如果传入参数就是调试模式，缩短间隔时间
 
 if __name__ == '__main__':
     main()
