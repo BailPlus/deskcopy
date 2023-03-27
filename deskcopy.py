@@ -14,20 +14,20 @@ def execute_with_arg():
         filename = sys.argv[1]
         file_suffix = filename.split('.')[-1]
         if file_suffix in ('doc','docx'):
-            threading.Thread(target=lambda:os.system(f'winword {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename))
+            threading.Thread(target=lambda:os.system(f'start winword {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
             sys.exit()
         elif file_suffix in ('ppt','pptx'):
-            threading.Thread(target=lambda:os.system(f'powerpnt {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename))
+            threading.Thread(target=lambda:os.system(f'start powerpnt {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
             sys.exit()
         elif file_suffix in ('xls','xlsx'):
-            threading.Thread(target=lambda:os.system(f'excel {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename))
+            threading.Thread(target=lambda:os.system(f'start excel {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
             sys.exit()
         elif file_suffix in ('pdf',):
-            threading.Thread(target=lambda:os.system(fr'C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename))
+            threading.Thread(target=lambda:os.system(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
             sys.exit()
 def is_file_number_change():
     '''检测是否出现新文件
