@@ -25,7 +25,7 @@ def is_file_number_change():
             若增多，说明有新文件，则退出阻塞，进行下一步操作。'''
     global filenum
     nowfilenum = len(os.listdir())
-    if nowfilenum > filenum:
+    if nowfilenum != filenum:
         filenum = nowfilenum    #复制结束后更新“原文件数量”
         return True
     else:
