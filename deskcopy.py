@@ -86,8 +86,13 @@ target(str):目标路径'''
             filesrc = os.path.join(i[0],j)
             if '.lnk' not in filesrc:    #排除.lnk文件
                 filetarget = os.path.join(target,j)
-                shutil.copy(filesrc,filetarget)
-                print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+                try:
+                    shutil.copy(filesrc,filetarget)
+                except Exception as e:
+                    print(f'复制异常 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+                    print(e)
+                else:
+                    print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
 
 def main():
     execute_with_arg()
