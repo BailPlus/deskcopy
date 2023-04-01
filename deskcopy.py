@@ -55,7 +55,7 @@ def upan(): #※不可在Linux下测试
     os.chdir('E:\\')
     TARGET = os.path.join(TARGET,time.strftime('%Y%m%d%H%M%S'))
     os.mkdir(TARGET)
-    copy('.',TARGET)
+    copy('.',TARGET,isfilter=True)
 def openfile(filename:str):
     '''打开文件并复制
 filename(str):文件名
@@ -76,30 +76,35 @@ filename(str):文件名
     elif file_suffix in ('pdf',):
         threading.Thread(target=lambda:os.system(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
         shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-def copy(path:str,target:str):
+def copy(path:str,target:str,isfilter:bool):
     '''复制目录下所有文件
 path(str):目录路径
-target(str):目标路径'''
+target(str):目标路径
+isfilter(bool):是否过滤后缀名'''
     filelst = os.walk(path)
     for i in filelst:
         for j in i[2]:
             filesrc = os.path.join(i[0],j)
-            if '.lnk' not in filesrc:    #排除.lnk文件
-                filetarget = os.path.join(target,j)
-                try:
-                    shutil.copy(filesrc,filetarget)
-                except Exception as e:
-                    print(f'复制异常 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
-                    print(e)
+            if isfilter:
+                suffix = os.path.splitext(filesrc)[-1]
+                if suffix in ('.doc','.docx','.ppt','.pptx','.pdf'):
+                    filetarget = os.path.join(target,j)
+                    try:
+                        shutil.copy(filesrc,filetarget)
+                    except Exception as e:
+                        print(f'复制异常 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+                        print(e)
+                    else:
+                        print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
                 else:
-                    print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+                    print(f'已跳过 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
 
 def main():
     execute_with_arg()
     print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
     while True:
         if is_file_number_change():
-            copy('.',TARGET)
+            copy('.',TARGET,isfilter=False)
         time.sleep(5)
 
 if __name__ == '__main__':
