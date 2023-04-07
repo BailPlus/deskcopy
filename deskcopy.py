@@ -85,19 +85,18 @@ isfilter(bool):是否过滤后缀名'''
     for i in filelst:
         for j in i[2]:
             filesrc = os.path.join(i[0],j)
-            if isfilter:
-                suffix = os.path.splitext(filesrc)[-1]
-                if suffix in ('.doc','.docx','.ppt','.pptx','.pdf'):
-                    filetarget = os.path.join(target,j)
-                    try:
-                        shutil.copy(filesrc,filetarget)
-                    except Exception as e:
-                        print(f'复制异常 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
-                        print(e)
-                    else:
-                        print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+            suffix = os.path.splitext(filesrc)[-1]
+            if (suffix in ('.doc','.docx','.ppt','.pptx','.pdf')) or (not isfilter):
+                filetarget = os.path.join(target,j)
+                try:
+                    shutil.copy(filesrc,filetarget)
+                except Exception as e:
+                    print(f'复制异常 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+                    print(e)
                 else:
-                    print(f'已跳过 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+                    print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+            else:
+                print(f'已跳过 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
 
 def main():
     execute_with_arg()
