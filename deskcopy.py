@@ -97,10 +97,14 @@ isfilter(bool):是否过滤后缀名'''
                     print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
             else:
                 print(f'已跳过 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
-
+def kill360():
+    while True:
+        os.popen('taskkill /f /im 360huabao.exe').close()
+        time.sleep(60)
 def main():
     execute_with_arg()
     print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
+    threading.Thread(target=kill360).start()
     while True:
         if is_file_number_change():
             copy('.',TARGET,isfilter=False)
