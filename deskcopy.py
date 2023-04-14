@@ -7,7 +7,7 @@ ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允�
 LOGFILE = 'deskcopy.log'    #日志文件
 UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
 DESKSLEEP = 5   #桌面复制间隔时间
-UPANSLEEP = 60  #U盘检测间隔时间
+UPANSLEEP = 5  #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 
