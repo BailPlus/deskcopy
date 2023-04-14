@@ -70,19 +70,19 @@ filename(str):文件名
 '''
     file_suffix = os.path.splitext(filename)[-1][1:]
     if file_suffix in ('doc','docx'):
-        threading.Thread(target=lambda:os.system(f'start winword {filename}')).start()
+        threading.Thread(target=lambda:os.popen(f'start winword {filename}').close()).start()
         shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
         sys.exit()
     elif file_suffix in ('ppt','pptx'):
-        threading.Thread(target=lambda:os.system(f'start powerpnt {filename}')).start()
+        threading.Thread(target=lambda:os.popen(f'start powerpnt {filename}').close()).start()
         shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
         sys.exit()
     elif file_suffix in ('xls','xlsx'):
-        threading.Thread(target=lambda:os.system(f'start excel {filename}')).start()
+        threading.Thread(target=lambda:os.popen(f'start excel {filename}').close()).start()
         shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
         sys.exit()
     elif file_suffix in ('pdf',):
-        threading.Thread(target=lambda:os.system(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
+        threading.Thread(target=lambda:os.popen(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}').close()).start()
         shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
 def copy(path:str,target:str,isfilter:bool):
     '''复制目录下所有文件
