@@ -14,7 +14,7 @@ STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 import os,time,shutil,sys,threading
 
 os.chdir(os.path.join(os.path.expanduser('~'),'Desktop'))
-filenum = len(os.listdir())
+filesizes = []
 
 def execute_with_arg():
     '''使用参数启动'''
@@ -26,18 +26,6 @@ def execute_with_arg():
             opencopy(sys.argv[1])
 
             sys.exit()
-def is_file_number_change():
-    '''检测是否出现新文件
-返回值:当前（改变后的）文件列表(list)
-    技术细节：获取桌面文件列表，统计文件数量，和原来的数量对比。
-            若增多，说明有新文件，则退出阻塞，进行下一步操作。'''
-    global filenum
-    nowfilenum = len(os.listdir())
-    if nowfilenum != filenum:
-        filenum = nowfilenum    #复制结束后更新“原文件数量”
-        return True
-    else:
-        return False
 def upancopy(): #※不可在Linux下测试
     global TARGET
     while not os.path.exists('E:\\'):
@@ -104,9 +92,16 @@ logtext(str):日志内容'''
     with open(LOGFILE,'a') as logfile:
         print(content,file=logfile)
 def deskcopy():
+    global filesizes
+    for i in os.listdir():
+        filesizes.append(os.stat(i).st_size)
     while True:
-        if is_file_number_change():
-            copy('.',TARGET,isfilter=False)
+        for i in os.listdir():
+            if os.stat(i).st_size not in filesizes:
+                copy('.',TARGET,isfilter=False)
+                filesizes = []
+                for j in os.listdir():
+                    filesizes.append(os.stat(j).st_size)
         time.sleep(DESKSLEEP)
 def main():
     execute_with_arg()
