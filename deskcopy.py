@@ -7,7 +7,7 @@ ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允�
 LOGFILE = 'deskcopy.log'    #日志文件
 UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
 DESKSLEEP = 5   #桌面复制间隔时间
-UPANSLEEP = 5  #U盘检测间隔时间
+UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 
@@ -91,11 +91,15 @@ target(str):目标路径
 isfilter(bool):是否过滤后缀名'''
     filelst = os.walk(path)
     for i in filelst:
+        for j in i[1]:
+            dirname = os.path.join(target,i[0],j)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
         for j in i[2]:
             filesrc = os.path.join(i[0],j)
             suffix = os.path.splitext(filesrc)[-1]
             if (suffix in ALLOW_SUFFIX) or (not isfilter):
-                filetarget = os.path.join(target,j)
+                filetarget = os.path.join(target,i[0],j)
                 try:
                     shutil.copy(filesrc,filetarget)
                 except Exception as e:
