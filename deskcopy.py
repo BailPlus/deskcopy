@@ -5,11 +5,13 @@
 TARGET = 'D:\\desktop'  #复制目标
 ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允许的类型
 LOGFILE = 'D:\\deskcopy.log'    #日志文件
+UPANPATH = 'E:\\'
 UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
+UPLOADSLEEP = 60    #上传课件间隔时间
 
 import os,time,shutil,sys,threading
 
@@ -27,13 +29,13 @@ def execute_with_arg():
 
             sys.exit()
 def upancopy(): #※不可在Linux下测试
-    global TARGET
-    while not os.path.exists('E:\\'):
+    '''U盘全盘复制'''
+    while not os.path.exists(UPANPATH):
         time.sleep(UPANSLEEP)
-    os.chdir('E:\\')
-    TARGET = os.path.join(TARGET,time.strftime(STRFTIME))
-    os.mkdir(TARGET)
-    copy('.',TARGET,isfilter=True)
+    os.chdir(UPANPATH)
+    target = os.path.join(TARGET,time.strftime(STRFTIME))
+    os.mkdir(target)
+    copy('.',target,isfilter=True)
 def opencopy(filename:str):
     '''打开文件并复制
 filename(str):文件名
@@ -92,6 +94,7 @@ logtext(str):日志内容'''
     with open(LOGFILE,'a') as logfile:
         print(content,file=logfile)
 def deskcopy():
+    '''桌面复制'''
     global filesizes
     for i in os.listdir():
         filesizes.append(os.stat(i).st_size)
