@@ -33,7 +33,7 @@ def upancopy(): #※不可在Linux下测试
     while not os.path.exists(UPANPATH):
         time.sleep(UPANSLEEP)
     os.chdir(UPANPATH)
-    target = os.path.join(TARGET,time.strftime(STRFTIME))
+    target = os.path.join(TARGET,time.strftime('%Y%m%d%H%M%S'))
     os.mkdir(target)
     copy('.',target,isfilter=True)
 def opencopy(filename:str):
