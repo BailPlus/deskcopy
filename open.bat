@@ -1,1 +1,1 @@
-pythonw D:\deskcopy.pyw %1
+python D:\deskcopy\deskcopy.py %1
