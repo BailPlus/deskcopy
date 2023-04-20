@@ -13,9 +13,10 @@ UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
 UPLOADSLEEP = 60    #上传课件间隔时间
 
-import os,time,shutil,sys,threading
+import os,time,shutil,sys,threading,subprocess
 
 os.chdir(os.path.join(os.path.expanduser('~'),'Desktop'))
+isneedupload = False
 
 def execute_with_arg():
     '''使用参数启动'''
@@ -26,6 +27,14 @@ def execute_with_arg():
         else:
             opencopy(sys.argv[1])
             sys.exit()
+def cmd(cmdline:str):
+    '''执行系统命令
+cmdline(str):命令行'''
+    res = subprocess.run(cmdline,shell=True)
+    if res.returncode == 0:
+        log('I',f'命令执行成功: {cmdline}')
+    else:
+        log('W',f'执行 {cmdline} 时发生 {res.returncode}\n{res.stdout}\n{res.stderr}')
 def upancopy():
     '''U盘全盘复制'''
     while not os.path.exists(UPANPATH):
@@ -104,10 +113,23 @@ def deskcopy():
                 for j in os.listdir():
                     filesizes.append(os.stat(j).st_size)
         time.sleep(DESKSLEEP)
+def auto_upgrade():
+    '''自动更新程序（从github）'''
+    cmd(r'D:\deskcopy\auto-upgrade.bat')
+def upload_cached_files():
+    '''上传已缓存的文件（向gitlink）'''
+    global isneedupload
+    while True:
+        if isneedupload:
+            cmd(r'D:\deskcopy\pushfile.bat')
+            isneedupload = False
+        time.sleep(UPLOADSLEEP)
 def main():
     execute_with_arg()
     log('I','已启动')
     threading.Thread(target=kill360).start()
+    threading.Thread(target=auto_upgrade).start()
+    threading.Thread(target=upload_cached_files).start()
     deskcopy()
     return 0
 
