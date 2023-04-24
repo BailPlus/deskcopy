@@ -1,4 +1,5 @@
-cd D:\deskcopy
+D:
+cd D:\desktop
 git add .
-git commit -m 课件自动上传
+git commit -m a
 git push

