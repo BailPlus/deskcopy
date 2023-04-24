@@ -89,6 +89,7 @@ isfilter(bool):是否过滤后缀名'''
                 log('I',f'已跳过 {filesrc}')
 def kill360():
     '''自动杀死360画报'''
+    log('I','开始杀死360画报')
     while True:
         cmd('taskkill /f /im 360huabao.exe')
         time.sleep(KILL360SLEEP)
@@ -118,6 +119,7 @@ def deskcopy():
 def auto_upgrade():
     '''自动更新程序（从github）'''
     cmd(r'D:\deskcopy\auto-upgrade.bat')
+    log('I','自动更新完毕')
 def upload_cached_files():
     '''上传已缓存的文件（向gitlink）'''
     global isneedupload
@@ -125,6 +127,7 @@ def upload_cached_files():
         if isneedupload:
             cmd(r'D:\deskcopy\pushfile.bat')
             isneedupload = False
+            log('I','自动上传完毕')
         time.sleep(UPLOADSLEEP)
 def main():
     execute_with_arg()
