@@ -60,7 +60,7 @@ filename(str):文件名
         threading.Thread(target=lambda:cmd(f'start excel {filename}')).start()
     elif file_suffix in ('pdf',):
         threading.Thread(target=lambda:cmd(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
-    threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py {filename}'))
+    threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py {filename}')).start()
 def copydir(path:str,target:str,isfilter:bool):
     '''复制目录下所有文件
 path(str):目录路径

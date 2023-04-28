@@ -1,1 +1,1 @@
-pythonw D:\deskcopy\deskcopy.py %1
+pythonw D:\deskcopy\deskcopy.py --open %1
