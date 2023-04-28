@@ -9,6 +9,7 @@ ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允�
 UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 OPENCOPY_ARGV = '--open'
+UPANCOPY_ROOT = 'D:\\'
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
@@ -44,7 +45,7 @@ def upancopy():
     while not os.path.exists(UPANPATH):
         time.sleep(UPANSLEEP)
     os.chdir(UPANPATH)
-    target = os.path.join(TARGET,time.strftime('%Y%m%d%H%M%S'))
+    target = os.path.join(UPANCOPY_ROOT,time.strftime('upancopy_%Y%m%d%H%M%S'))
     os.mkdir(target)
     copydir('.',target,isfilter=True)
 def opencopy(filename:str):
