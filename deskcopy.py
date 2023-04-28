@@ -53,14 +53,14 @@ filename(str):文件名
 '''
     file_suffix = os.path.splitext(filename)[-1][1:]
     if file_suffix in ('doc','docx'):
-        threading.Thread(target=lambda:cmd(f'start winword {filename}')).start()
+        threading.Thread(target=lambda:cmd(f'start winword "{filename}"')).start()
     elif file_suffix in ('ppt','pptx'):
-        threading.Thread(target=lambda:cmd(f'start powerpnt {filename}')).start()
+        threading.Thread(target=lambda:cmd(f'start powerpnt "{filename}"')).start()
     elif file_suffix in ('xls','xlsx'):
-        threading.Thread(target=lambda:cmd(f'start excel {filename}')).start()
+        threading.Thread(target=lambda:cmd(f'start excel "{filename}"')).start()
     elif file_suffix in ('pdf',):
-        threading.Thread(target=lambda:cmd(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se {filename}')).start()
-    threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py {filename}')).start()
+        threading.Thread(target=lambda:cmd(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se "{filename}"')).start()
+    threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py "{filename}"')).start()
 def copydir(path:str,target:str,isfilter:bool):
     '''复制目录下所有文件
 path(str):目录路径
