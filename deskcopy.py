@@ -6,10 +6,11 @@ TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\deskcopy.log'    #日志文件
 UPANPATH = 'E:\\'
 ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允许的类型
-UPACOPY_ARGV = '--upan' #U盘全盘复制启动参数
+UPACOPY_ARGV = '--upan' #U盘全盘复制触发选项
+OPENCOPY_ARGV = '--open'    #打开复制触发选项
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
-OPENCOPY_ARGV = '--open'
-UPANCOPY_ROOT = 'D:\\'
+UPANCOPY_ROOT = 'D:\\'  #U盘复制目标目录的父目录
+WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
@@ -54,9 +55,15 @@ filename(str):文件名
 '''
     file_suffix = os.path.splitext(filename)[-1][1:]
     if file_suffix in ('doc','docx'):
-        threading.Thread(target=lambda:cmd(f'start winword "{filename}"')).start()
+        if os.path.exists(WPS_ENABLE_FILE):
+            threading.Thread(target=lambda:cmd(f'start wps "{filename}"')).start()
+        else:
+            threading.Thread(target=lambda:cmd(f'start winword "{filename}"')).start()
     elif file_suffix in ('ppt','pptx'):
-        threading.Thread(target=lambda:cmd(f'start powerpnt "{filename}"')).start()
+        if os.path.exists(WPS_ENABLE_FILE):
+            threading.Thread(target=lambda:cmd(f'start wpp "{filename}"')).start()
+        else:
+            threading.Thread(target=lambda:cmd(f'start powerpnt "{filename}"')).start()
     elif file_suffix in ('xls','xlsx'):
         threading.Thread(target=lambda:cmd(f'start excel "{filename}"')).start()
     elif file_suffix in ('pdf',):
