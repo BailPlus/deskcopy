@@ -1,16 +1,17 @@
 #Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.8.5_36
-#2022.11.18-2023.4.18
+#deskcopy 桌面拖入文件自动复制 v1.9.12_49
+#2022.11.18-2023.5.3
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\deskcopy.log'    #日志文件
-UPANPATH = 'E:\\'
-ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允许的类型
-UPACOPY_ARGV = '--upan' #U盘全盘复制触发选项
-OPENCOPY_ARGV = '--open'    #打开复制触发选项
-STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
+UPANPATH = 'E:\\'   #U盘挂载点
 UPANCOPY_ROOT = 'D:\\'  #U盘复制目标目录的父目录
 WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
+NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
+ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允许的类型
+UPANCOPY_ARGV = '--upan' #U盘全盘复制触发选项
+OPENCOPY_ARGV = '--open'    #打开复制触发选项
+STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
@@ -24,7 +25,7 @@ isneedupload = False
 def execute_with_arg():
     '''使用参数启动'''
     if len(sys.argv) >= 2:
-        if sys.argv[1] == UPACOPY_ARGV:
+        if sys.argv[1] == UPANCOPY_ARGV:
             upancopy()
             sys.exit(0)
         elif sys.argv[1] == OPENCOPY_ARGV:
@@ -129,8 +130,9 @@ def deskcopy():
         time.sleep(DESKSLEEP)
 def auto_upgrade():
     '''自动更新程序（从github）'''
-    cmd(r'D:\deskcopy\auto-upgrade.bat')
-    log('I','自动更新完毕')
+    if not os.path.exists(NOT_UPGRADE_FILE):
+        cmd(r'D:\deskcopy\auto-upgrade.bat')
+        log('I','自动更新完毕')
 def upload_cached_files():
     '''上传已缓存的文件（向gitlink）'''
     global isneedupload
