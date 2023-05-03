@@ -107,20 +107,25 @@ logtext(str):日志内容'''
     print(content,file=sys.stderr)
     with open(LOGFILE,'a') as logfile:
         print(content,file=logfile)
+def get_filesizes(path:str=None)->list:
+    '''获取目录下所有文件大小
+path(str):要获取的目录，默认为工作目录
+返回值:包括该目录下所有文件大小的列表(list)'''
+    filesizes = []
+    for i in os.listdir(path):
+        filesizes.append(os.stat(i).st_size)
+    return filesizes
 def deskcopy():
     '''桌面复制'''
     global isneedupload
-    filesizes = []
-    for i in os.listdir():
-        filesizes.append(os.stat(i).st_size)
+    filesizes = get_filesizes()
     while True:
-        for i in os.listdir():
-            if os.stat(i).st_size not in filesizes:
+        new_filesizes = get_filesizes()
+        for i in new_filesizes:
+            if (i not in filesizes) or (len(new_filesizes) != len(filesizes)):
                 copydir('.',TARGET,isfilter=False)
                 isneedupload = True
-                filesizes = []
-                for j in os.listdir():
-                    filesizes.append(os.stat(j).st_size)
+                filesizes = new_filesizes
         time.sleep(DESKSLEEP)
 def auto_upgrade():
     '''自动更新程序（从github）'''
