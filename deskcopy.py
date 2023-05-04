@@ -16,6 +16,7 @@ DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 60   #杀死360画报间隔时间
 UPLOADSLEEP = 60    #上传课件间隔时间
+UPGRADE_DELAY = 300 #自动更新延迟启动时间
 
 import os,time,shutil,sys,threading,subprocess
 
@@ -131,6 +132,7 @@ def deskcopy():
 def auto_upgrade():
     '''自动更新程序（从github）'''
     if not os.path.exists(NOT_UPGRADE_FILE):
+        time.sleep(UPGRADE_DELAY)
         cmd(r'D:\deskcopy\auto-upgrade.bat')
         log('I','自动更新完毕')
 def upload_cached_files():
