@@ -3,7 +3,7 @@
 #2022.11.18-2023.5.3
 
 TARGET = 'D:\\desktop'  #复制目标
-LOGFILE = 'D:\\deskcopy.log'    #日志文件
+LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
 UPANPATH = 'E:\\'   #U盘挂载点
 UPANCOPY_ROOT = 'D:\\'  #U盘复制目标目录的父目录
 WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
