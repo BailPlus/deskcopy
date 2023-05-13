@@ -57,10 +57,7 @@ filename(str):文件名
 '''
     file_suffix = os.path.splitext(filename)[-1][1:]
     if file_suffix in ('doc','docx'):
-        if os.path.exists(WPS_ENABLE_FILE):
-            threading.Thread(target=lambda:cmd(f'start wps "{filename}"')).start()
-        else:
-            threading.Thread(target=lambda:cmd(f'start winword "{filename}"')).start()
+        threading.Thread(target=lambda:cmd(f'start winword "{filename}"')).start()
     elif file_suffix in ('ppt','pptx'):
         if os.path.exists(WPS_ENABLE_FILE):
             threading.Thread(target=lambda:cmd(f'start wpp "{filename}"')).start()
