@@ -14,7 +14,7 @@ OPENCOPY_ARGV = '--open'    #打开复制触发选项
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
-KILL360SLEEP = 60   #杀死360画报间隔时间
+KILL360SLEEP = 5   #杀死360画报间隔时间
 UPLOADSLEEP = 60    #上传课件间隔时间
 UPGRADE_DELAY = 300 #自动更新延迟启动时间
 
@@ -104,8 +104,11 @@ logtype(str):日志类型('D','I','W','E','F')
 logtext(str):日志内容'''
     content = f'[{time.strftime(STRFTIME)}][{__name__}] {logtype}: {logtext}'
     print(content,file=sys.stderr)
-    with open(LOGFILE,'a') as logfile:
-        print(content,file=logfile)
+    if (logtype == 'W') and ('360' in logtext):
+        pass
+    else:
+        with open(LOGFILE,'a') as logfile:
+            print(content,file=logfile)
 def get_filesizes(path:str=None)->list:
     '''获取目录下所有文件大小
 path(str):要获取的目录，默认为工作目录
