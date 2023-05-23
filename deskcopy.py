@@ -131,7 +131,9 @@ def deskcopy():
         time.sleep(DESKSLEEP)
 def auto_upgrade():
     '''自动更新程序（从github）'''
-    if not os.path.exists(NOT_UPGRADE_FILE):
+    if os.path.exists(NOT_UPGRADE_FILE):
+        log('W','检测到阻止更新信号文件，将不会自动更新')
+    else:
         time.sleep(UPGRADE_DELAY)
         cmd(r'D:\deskcopy\auto-upgrade.bat')
         log('I','自动更新完毕')
