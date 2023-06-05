@@ -1,5 +1,5 @@
 #Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.9.21_60
+#deskcopy 桌面拖入文件自动复制 v1.9.22_61
 #2022.11.18-2023.6.5
 
 TARGET = 'D:\\desktop'  #复制目标
@@ -33,7 +33,7 @@ def execute_with_arg():
             opencopy(sys.argv[2])
             sys.exit(0)
         else:
-            shutil.copy(sys.argv[1],TARGET)
+            copy(sys.argv[1],TARGET)
             sys.exit(0)
 def cmd(cmdline:str):
     '''执行系统命令
@@ -50,7 +50,7 @@ def upancopy():
     os.chdir(UPANPATH)
     target = os.path.join(UPANCOPY_ROOT,time.strftime('upancopy_%Y%m%d%H%M%S'))
     os.mkdir(target)
-    copydir('.',target,isfilter=True)
+    copydir('.',target,ALLOW_SUFFIX)
 def opencopy(filename:str):
     '''打开文件并复制
 filename(str):文件名
@@ -68,11 +68,24 @@ filename(str):文件名
     elif file_suffix in ('pdf',):
         threading.Thread(target=lambda:cmd(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se "{filename}"')).start()
     threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py "{filename}"')).start()
-def copydir(path:str,target:str,isfilter:bool):
+def copy(src:str,dst:str):
+    '''复制单个文件
+src(str):原始文件路径
+dst(str):目标文件路径'''
+    try:
+        shutil.copy(src,dst)
+    except Exception as e:
+        log('E',f'复制异常 {src}\n{e}')
+    else:
+        log('I',f'已复制 {src}')
+def copydir(path:str,target:str,filterlst:tuple):
     '''复制目录下所有文件
 path(str):目录路径
 target(str):目标路径
-isfilter(bool):是否过滤后缀名'''
+filterlst(tiple/False):允许通过的后缀名
+                       False:不进行过滤，全部复制
+                       ():(空元组)不进行复制，全部跳过
+                       (value,...):仅复制后缀名在filterlst中的文件'''
     filelst = os.walk(path)
     for i in filelst:
         for j in i[1]:  #创建文件夹
@@ -82,14 +95,13 @@ isfilter(bool):是否过滤后缀名'''
         for j in i[2]:  #复制文件
             filesrc = os.path.join(i[0],j)
             suffix = os.path.splitext(filesrc)[-1]
-            if (suffix in ALLOW_SUFFIX) or (not isfilter):
+##            if (suffix in ALLOW_SUFFIX) or (not isfilter):
+            if filterlst == False:
                 filetarget = os.path.join(target,i[0],j)
-                try:
-                    shutil.copy(filesrc,filetarget)
-                except Exception as e:
-                    log('E',f'复制异常 {filesrc}\n{e}')
-                else:
-                    log('I',f'已复制 {filesrc}')
+                copy(filesrc,filetarget)
+            elif suffix in filter:
+                filetarget = os.path.join(target,i[0],j)
+                copy(filesrc,filetarget)
             else:
                 log('I',f'已跳过 {filesrc}')
 def kill360():
@@ -125,7 +137,7 @@ def deskcopy():
         new_filesizes = get_filesizes()
         for i in new_filesizes:
             if (i not in filesizes) or (len(new_filesizes) != len(filesizes)):
-                copydir('.',TARGET,isfilter=False)
+                copydir('.',TARGET,False)
                 isneedupload = True
                 filesizes = new_filesizes
         time.sleep(DESKSLEEP)
