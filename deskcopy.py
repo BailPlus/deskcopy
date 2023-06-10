@@ -99,7 +99,7 @@ filterlst(tiple/False):允许通过的后缀名
             if filterlst == False:
                 filetarget = os.path.join(target,i[0],j)
                 copy(filesrc,filetarget)
-            elif suffix in filter:
+            elif suffix in filterlst:
                 filetarget = os.path.join(target,i[0],j)
                 copy(filesrc,filetarget)
             else:
