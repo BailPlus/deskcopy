@@ -8,7 +8,8 @@ UPANPATH = 'E:\\'   #U盘挂载点
 UPANCOPY_ROOT = 'D:\\'  #U盘复制目标目录的父目录
 WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
 NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
-ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')   #过滤后缀名时允许的类型
+UPANCOPY_ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')  #U盘复制时允许的后缀名
+TEMPCOPY_ALLOW_SUFFIX = ('.pdf',)   #temp目录复制时允许的后缀名
 UPANCOPY_ARGV = '--upan' #U盘全盘复制触发选项
 OPENCOPY_ARGV = '--open'    #打开复制触发选项
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
@@ -50,7 +51,7 @@ def upancopy():
     os.chdir(UPANPATH)
     target = os.path.join(UPANCOPY_ROOT,time.strftime('upancopy_%Y%m%d%H%M%S'))
     os.mkdir(target)
-    copydir('.',target,ALLOW_SUFFIX)
+    copydir('.',target,UPANCOPY_ALLOW_SUFFIX)
 def opencopy(filename:str):
     '''打开文件并复制
 filename(str):文件名
