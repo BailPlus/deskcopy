@@ -1,11 +1,13 @@
 #Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.9.22_61
-#2022.11.18-2023.6.5
+#deskcopy 桌面拖入文件自动复制 v1.10_65
+#2022.11.18-2023.6.22
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
 UPANPATH = 'E:\\'   #U盘挂载点
 UPANCOPY_ROOT = 'D:\\'  #U盘复制目标目录的父目录
+RUIPATH = r'E:\高三一轮'    #数学一轮复制源文件目录
+RUITARGET = r'D:\desktop\高三一轮'  #数学一轮复制目标目录
 WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
 NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
 UPANCOPY_ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')  #U盘复制时允许的后缀名
@@ -138,6 +140,7 @@ def deskcopy():
         new_filesizes = get_filesizes()
         for i in new_filesizes:
             if (i not in filesizes) or (len(new_filesizes) != len(filesizes)):
+                log('I','已触发桌面复制')
                 copydir('.',TARGET,False)
                 isneedupload = True
                 filesizes = new_filesizes
@@ -159,12 +162,23 @@ def upload_cached_files():
             isneedupload = False
             log('I','自动上传完毕')
         time.sleep(UPLOADSLEEP)
+def ruicopy():
+    '''数学一轮资料自动复制'''
+    global isneedupload
+    while not os.path.exists(RUIPATH):
+        time.sleep(UPANSLEEP)
+    os.chdir(RUIPATH)
+    if not os.path.exists(RUITARGET):
+        os.makedirs(RUITARGET)
+    copydir('.',RUITARGET,UPANCOPY_ALLOW_SUFFIX)
+    isneedupload = True
 def main():
     execute_with_arg()
     log('I','已启动')
     threading.Thread(target=kill360).start()
 ##    threading.Thread(target=auto_upgrade).start()
     threading.Thread(target=upload_cached_files).start()
+    threading.Thread(target=ruicopy).start()
     deskcopy()
     return 0
 
