@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.10_65
-#2022.11.18-2023.6.22
+#deskcopy 桌面拖入文件自动复制 v1.10.2_67
+#2022.11.18-2023.6.23
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -173,6 +173,7 @@ def ruicopy():
         os.makedirs(RUITARGET)
     copydir('.',RUITARGET,False)
     isneedupload = True
+    os.chdir(os.path.join(os.path.expanduser('~'),'Desktop'))   #切出高三一轮目录，防止U盘占用
 def main():
     execute_with_arg()
     log('I','已启动')
