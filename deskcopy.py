@@ -85,7 +85,7 @@ def copydir(path:str,target:str,filterlst:tuple):
     '''复制目录下所有文件
 path(str):目录路径
 target(str):目标路径
-filterlst(tiple/False):允许通过的后缀名
+filterlst(tuple/False):允许通过的后缀名
                        False:不进行过滤，全部复制
                        ():(空元组)不进行复制，全部跳过
                        (value,...):仅复制后缀名在filterlst中的文件'''
@@ -167,10 +167,11 @@ def ruicopy():
     global isneedupload
     while not os.path.exists(RUIPATH):
         time.sleep(UPANSLEEP)
+    log('I','已触发数学一轮资料自动复制')
     os.chdir(RUIPATH)
     if not os.path.exists(RUITARGET):
         os.makedirs(RUITARGET)
-    copydir('.',RUITARGET,UPANCOPY_ALLOW_SUFFIX)
+    copydir('.',RUITARGET,False)
     isneedupload = True
 def main():
     execute_with_arg()
