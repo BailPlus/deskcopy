@@ -23,8 +23,9 @@ UPGRADE_DELAY = 300 #自动更新延迟启动时间
 
 import os,time,shutil,sys,threading,subprocess
 
-os.chdir(os.path.join(os.path.expanduser('~'),'Desktop'))
+desktop_path = os.path.join(os.path.expanduser('~'),'Desktop')
 isneedupload = False
+os.chdir(desktop_path)
 
 def execute_with_arg():
     '''使用参数启动'''
@@ -97,8 +98,7 @@ filterlst(tuple/False):允许通过的后缀名
                 os.makedirs(dirname)
         for j in i[2]:  #复制文件
             filesrc = os.path.join(i[0],j)
-            suffix = os.path.splitext(filesrc)[-1]
-##            if (suffix in ALLOW_SUFFIX) or (not isfilter):
+            suffix = os.path.splitext(filesrc)[1]
             if filterlst == False:
                 filetarget = os.path.join(target,i[0],j)
                 copy(filesrc,filetarget)
@@ -135,9 +135,9 @@ path(str):要获取的目录，默认为工作目录
 def deskcopy():
     '''桌面复制'''
     global isneedupload
-    filesizes = get_filesizes()
+    filesizes = get_filesizes(desktop_path)
     while True:
-        new_filesizes = get_filesizes()
+        new_filesizes = get_filesizes(desktop_path)
         for i in new_filesizes:
             if (i not in filesizes) or (len(new_filesizes) != len(filesizes)):
                 log('I','已触发桌面复制')
@@ -173,7 +173,7 @@ def ruicopy():
         os.makedirs(RUITARGET)
     copydir('.',RUITARGET,False)
     isneedupload = True
-    os.chdir(os.path.join(os.path.expanduser('~'),'Desktop'))   #切出高三一轮目录，防止U盘占用
+    os.chdir(desktop_path)   #切出高三一轮目录，防止U盘占用
 def main():
     execute_with_arg()
     log('I','已启动')
