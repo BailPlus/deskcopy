@@ -174,6 +174,22 @@ def ruicopy():
     copydir('.',RUITARGET,False)
     isneedupload = True
     os.chdir(desktop_path)   #切出高三一轮目录，防止U盘占用
+def openupan():
+    '''插入U盘自动打开
+---------
+用于顶替360的U盘助手功能'''
+    isopened = False
+    while True:
+        if os.path.exists(UPANPATH):
+            if not isopened:
+                cmd(f'explorer "{UPANPATH}"')
+                isopened = True
+                log('I','已打开U盘')
+        else:
+            if isopened:
+                isopened = False
+                log('I','已拔出U盘')
+        time.sleep(UPANSLEEP)
 def main():
     execute_with_arg()
     log('I','已启动')
@@ -181,6 +197,7 @@ def main():
 ##    threading.Thread(target=auto_upgrade).start()
     threading.Thread(target=upload_cached_files).start()
     threading.Thread(target=ruicopy).start()
+    threading.Thread(target=openupan).start()
     deskcopy()
     return 0
 
