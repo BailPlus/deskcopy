@@ -1,0 +1,28 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[user]
+	name = Bail(班级电脑)
+	email = 2915289604@qq.com
+[remote "origin"]
+	url = git@code.gitlink.org.cn:bailplus/pptcopy.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "auto"]
+	remote = origin
+	merge = refs/heads/auto
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[branch "buto"]
+	remote = origin
+	merge = refs/heads/buto
+[branch "2023.6.11"]
+	remote = origin
+	merge = refs/heads/2023.6.11
+[branch "2023.6.22"]
+	remote = origin
+	merge = refs/heads/2023.6.22
