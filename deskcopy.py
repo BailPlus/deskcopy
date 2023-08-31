@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.10.2_67
-#2022.11.18-2023.6.23
+#deskcopy 桌面拖入文件自动复制 v1.11_68
+#2022.11.18-2023.8.31
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -18,13 +18,13 @@ STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
 KILL360SLEEP = 5   #杀死360画报间隔时间
-UPLOADSLEEP = 60    #上传课件间隔时间
+UPLOADSLEEP = 300    #上传课件间隔时间
 UPGRADE_DELAY = 300 #自动更新延迟启动时间
 
 import os,time,shutil,sys,threading,subprocess
 
 desktop_path = os.path.join(os.path.expanduser('~'),'Desktop')
-isneedupload = False
+isneedupload = False    #已弃用，在过渡时期防止bug的发生
 os.chdir(desktop_path)
 
 def execute_with_arg():
@@ -155,12 +155,10 @@ def auto_upgrade():
         log('I','自动更新完毕')
 def upload_cached_files():
     '''上传已缓存的文件（向gitlink）'''
-    global isneedupload
     while True:
-        if isneedupload:
-            cmd(r'D:\deskcopy\pushfile.bat')
-            isneedupload = False
-            log('I','自动上传完毕')
+        cmd(r'D:\deskcopy\pushfile.bat')
+        isneedupload = False
+        log('I','自动上传完毕')
         time.sleep(UPLOADSLEEP)
 def ruicopy():
     '''数学一轮资料自动复制'''
