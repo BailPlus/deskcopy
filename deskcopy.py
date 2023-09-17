@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.11.2_70
-#2022.11.18-2023.9.10
+#deskcopy 桌面拖入文件自动复制 v1.11.3_71
+#2022.11.18-2023.9.17
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -10,6 +10,7 @@ RUIPATH = r'E:\高三一轮'    #数学一轮复制源文件目录
 RUITARGET = r'D:\desktop\高三一轮'  #数学一轮复制目标目录
 WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
 NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
+NEED_UPLOAD_FILE = r'D:\deskcopy\need_upload'   #上传信号
 UPANCOPY_ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')  #U盘复制时允许的后缀名
 TEMPCOPY_ALLOW_SUFFIX = ('.pdf',)   #temp目录复制时允许的后缀名
 UPANCOPY_ARGV = '--upan' #U盘全盘复制触发选项
@@ -24,7 +25,7 @@ UPGRADE_DELAY = 300 #自动更新延迟启动时间
 import os,time,shutil,sys,threading,subprocess
 
 desktop_path = os.path.join(os.path.expanduser('~'),'Desktop')
-isneedupload = False
+isneedupload = False    #已弃用，在过渡时期防止bug的发生
 os.chdir(desktop_path)
 
 def execute_with_arg():
@@ -72,6 +73,7 @@ filename(str):文件名
     elif file_suffix in ('pdf',):
         threading.Thread(target=lambda:cmd(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se "{filename}"')).start()
     threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py "{filename}"')).start()
+    open(NEED_UPLOAD_FILE,'w').close()
 def copy(src:str,dst:str):
     '''复制单个文件
 src(str):原始文件路径
@@ -134,7 +136,6 @@ path(str):要获取的目录，默认为工作目录
     return filesizes
 def deskcopy():
     '''桌面复制'''
-    global isneedupload
     filesizes = get_filesizes(desktop_path)
     while True:
         new_filesizes = get_filesizes(desktop_path)
@@ -142,7 +143,7 @@ def deskcopy():
             if (i not in filesizes) or (len(new_filesizes) != len(filesizes)):
                 log('I','已触发桌面复制')
                 copydir('.',TARGET,False)
-                isneedupload = True
+                open(NEED_UPLOAD_FILE,'w').close()
                 filesizes = new_filesizes
         time.sleep(DESKSLEEP)
 def auto_upgrade():
@@ -155,16 +156,14 @@ def auto_upgrade():
         log('I','自动更新完毕')
 def upload_cached_files():
     '''上传已缓存的文件（向gitlink）'''
-    global isneedupload
     while True:
-        if isneedupload:
+        if os.path.exists(NEED_UPLOAD_FILE):
             cmd(r'D:\deskcopy\pushfile.bat')
-            isneedupload = False
+            os.remove(NEED_UPLOAD_FILE)
             log('I','自动上传完毕')
         time.sleep(UPLOADSLEEP)
 def ruicopy():
     '''数学一轮资料自动复制'''
-    global isneedupload
     while not os.path.exists(RUIPATH):
         time.sleep(UPANSLEEP)
     log('I','已触发数学一轮资料自动复制')
@@ -172,7 +171,7 @@ def ruicopy():
     if not os.path.exists(RUITARGET):
         os.makedirs(RUITARGET)
     copydir('.',RUITARGET,False)
-    isneedupload = True
+    open(NEED_UPLOAD_FILE,'w').close()
     os.chdir(desktop_path)   #切出高三一轮目录，防止U盘占用
 def openupan():
     '''插入U盘自动打开
