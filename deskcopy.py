@@ -11,6 +11,7 @@ RUITARGET = r'D:\desktop\高三一轮'  #数学一轮复制目标目录
 WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
 NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
 NEED_UPLOAD_FILE = r'D:\deskcopy\need_upload'   #上传信号
+VERSION_HANDOVER_COMPLETE = r'D:\deskcopy\VERSION_HANDOVER_COMPLETE'    #版本交接完毕信号
 UPANCOPY_ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')  #U盘复制时允许的后缀名
 TEMPCOPY_ALLOW_SUFFIX = ('.pdf',)   #temp目录复制时允许的后缀名
 UPANCOPY_ARGV = '--upan' #U盘全盘复制触发选项
@@ -26,6 +27,7 @@ import os,time,shutil,sys,threading,subprocess
 
 desktop_path = os.path.join(os.path.expanduser('~'),'Desktop')
 isneedupload = False    #已弃用，在过渡时期防止bug的发生
+ready_to_upload = False
 os.chdir(desktop_path)
 
 def execute_with_arg():
@@ -156,6 +158,8 @@ def auto_upgrade():
         log('I','自动更新完毕')
 def upload_cached_files():
     '''上传已缓存的文件（向gitlink）'''
+    while not ready_to_upload:
+        time.sleep(UPLOADSLEEP)
     while True:
         if os.path.exists(NEED_UPLOAD_FILE):
             cmd(r'D:\deskcopy\pushfile.bat')
@@ -189,14 +193,26 @@ def openupan():
                 isopened = False
                 log('I','已拔出U盘')
         time.sleep(UPANSLEEP)
+def pull_pptcopy_repo():
+    global ready_to_upload
+    cmd(r'D:\deskcopy\pull_pptcopy_repo.bat')
+    log('I','pptcopy仓库初始化完毕')
+    ready_to_upload = True
+def version_handover():
+    if not os.path.exists(VERSION_HANDOVER_COMPLETE):
+        cmd(r'D:\deskcopy\version_handover.bat')
+        open(VERSION_HANDOVER_COMPLETE,'w').close()
+        log('I','版本交接完毕')
 def main():
     execute_with_arg()
     log('I','已启动')
+    version_handover()
     threading.Thread(target=kill360).start()
     threading.Thread(target=auto_upgrade).start()
     threading.Thread(target=upload_cached_files).start()
     threading.Thread(target=ruicopy).start()
     threading.Thread(target=openupan).start()
+    threading.Thread(target=pull_pptcopy_repo).start()
     deskcopy()
     return 0
 
