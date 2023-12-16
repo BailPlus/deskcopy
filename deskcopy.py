@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.11.3_71
-#2022.11.18-2023.9.17
+#deskcopy 桌面拖入文件自动复制 v1.11.4_72
+#2022.11.18-2023.12.16
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -189,8 +189,16 @@ def openupan():
                 isopened = False
                 log('I','已拔出U盘')
         time.sleep(UPANSLEEP)
+def remove_git_lock():
+    '''去除pptcopy(班级电脑为D:\desktop)仓库锁，防止因git异常退出而导致无法上传的问题'''
+    lockfile = os.path.join(TARGET,'.git','index.lock')
+    if os.path.exists(lockfile):
+        log('W','检测到复制目标仓库被异常锁定，正在尝试解锁')
+        os.remove(lockfile)
+        log('I','解锁成功')
 def main():
     execute_with_arg()
+    remove_git_lock()
     log('I','已启动')
     threading.Thread(target=kill360).start()
     threading.Thread(target=auto_upgrade).start()
