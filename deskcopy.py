@@ -1,5 +1,5 @@
 #Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.11.4_72
+#deskcopy 桌面拖入文件自动复制 v1.12_73
 #2022.11.18-2023.12.16
 
 TARGET = 'D:\\desktop'  #复制目标
@@ -26,6 +26,7 @@ import os,time,shutil,sys,threading,subprocess
 
 desktop_path = os.path.join(os.path.expanduser('~'),'Desktop')
 isneedupload = False    #已弃用，在过渡时期防止bug的发生
+daily_dir = ''  #每日文件夹，由create_daily_dir函数提供，用于将opencopy,deskcopy的文件复制至此目录
 os.chdir(desktop_path)
 
 def execute_with_arg():
@@ -38,7 +39,7 @@ def execute_with_arg():
             opencopy(sys.argv[2])
             sys.exit(0)
         else:
-            copy(sys.argv[1],TARGET)
+            copy(sys.argv[1],daily_dir)
             sys.exit(0)
 def cmd(cmdline:str):
     '''执行系统命令
@@ -142,7 +143,7 @@ def deskcopy():
         for i in new_filesizes:
             if (i not in filesizes) or (len(new_filesizes) != len(filesizes)):
                 log('I','已触发桌面复制')
-                copydir('.',TARGET,False)
+                copydir('.',daily_dir,False)
                 open(NEED_UPLOAD_FILE,'w').close()
                 filesizes = new_filesizes
         time.sleep(DESKSLEEP)
@@ -196,9 +197,19 @@ def remove_git_lock():
         log('W','检测到复制目标仓库被异常锁定，正在尝试解锁')
         os.remove(lockfile)
         log('I','解锁成功')
+def create_daily_dir():
+    '''创建每日文件夹'''
+    global daily_dir
+    daily_dir = os.path.join(TARGET,time.strftime('%Y.%m.%d'))
+    if not os.path.exists(daily_dir):
+        os.mkdir(daily_dir)
+        log('I','已创建今日文件夹')
+    else:
+        log('I','今日文件夹已存在')
 def main():
     execute_with_arg()
     remove_git_lock()
+    create_daily_dir()
     log('I','已启动')
     threading.Thread(target=kill360).start()
     threading.Thread(target=auto_upgrade).start()
