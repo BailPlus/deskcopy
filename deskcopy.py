@@ -1,6 +1,6 @@
-#Copyright Bail 2022-2023
-#deskcopy 桌面拖入文件自动复制 v1.12_73
-#2022.11.18-2023.12.16
+#Copyright Bail 2022-2024
+#deskcopy 桌面拖入文件自动复制 v1.12.0.1_74
+#2022.11.18-2024.1.3
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -214,7 +214,7 @@ def main():
     threading.Thread(target=kill360).start()
     threading.Thread(target=auto_upgrade).start()
     threading.Thread(target=upload_cached_files).start()
-    threading.Thread(target=ruicopy).start()
+##    threading.Thread(target=ruicopy).start()
     threading.Thread(target=openupan).start()
     deskcopy()
     return 0
