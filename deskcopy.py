@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.0.1_74
-#2022.11.18-2024.1.3
+#deskcopy 桌面拖入文件自动复制 v1.12.1_75
+#2022.11.18-2024.1.5
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -11,6 +11,7 @@ RUITARGET = r'D:\desktop\高三一轮'  #数学一轮复制目标目录
 WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
 NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
 NEED_UPLOAD_FILE = r'D:\deskcopy\need_upload'   #上传信号
+DAILY_DIR_FILE = r'D:\deskcopy\dailydir'    #每日文件夹位置
 UPANCOPY_ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')  #U盘复制时允许的后缀名
 TEMPCOPY_ALLOW_SUFFIX = ('.pdf',)   #temp目录复制时允许的后缀名
 UPANCOPY_ARGV = '--upan' #U盘全盘复制触发选项
@@ -26,7 +27,6 @@ import os,time,shutil,sys,threading,subprocess
 
 desktop_path = os.path.join(os.path.expanduser('~'),'Desktop')
 isneedupload = False    #已弃用，在过渡时期防止bug的发生
-daily_dir = ''  #每日文件夹，由create_daily_dir函数提供，用于将opencopy,deskcopy的文件复制至此目录
 os.chdir(desktop_path)
 
 def execute_with_arg():
@@ -39,7 +39,7 @@ def execute_with_arg():
             opencopy(sys.argv[2])
             sys.exit(0)
         else:
-            copy(sys.argv[1],daily_dir)
+            copy(sys.argv[1],get_daily_dir())
             sys.exit(0)
 def cmd(cmdline:str):
     '''执行系统命令
@@ -143,7 +143,7 @@ def deskcopy():
         for i in new_filesizes:
             if (i not in filesizes) or (len(new_filesizes) != len(filesizes)):
                 log('I','已触发桌面复制')
-                copydir('.',daily_dir,False)
+                copydir('.',get_daily_dir(),False)
                 open(NEED_UPLOAD_FILE,'w').close()
                 filesizes = new_filesizes
         time.sleep(DESKSLEEP)
@@ -199,13 +199,19 @@ def remove_git_lock():
         log('I','解锁成功')
 def create_daily_dir():
     '''创建每日文件夹'''
-    global daily_dir
     daily_dir = os.path.join(TARGET,time.strftime('%Y.%m.%d'))
-    if not os.path.exists(daily_dir):
+    if get_daily_dir() != daily_dir:
         os.mkdir(daily_dir)
+        with open(DAILY_DIR_FILE,'w') as f:
+            f.write(daily_dir)
         log('I','已创建今日文件夹')
     else:
         log('I','今日文件夹已存在')
+def get_daily_dir()->str:
+    '''获取每日文件夹路径
+返回值:每日文件夹路径，即DAILY_DIR_FILE文件内容(str)'''
+    with open(DAILY_DIR_FILE) as f:
+        return f.read()
 def main():
     execute_with_arg()
     remove_git_lock()
