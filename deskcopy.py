@@ -1,5 +1,5 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.2_76
+#deskcopy 桌面拖入文件自动复制 v1.12.3_77
 #2022.11.18-2024.1.19
 
 TARGET = 'D:\\desktop'  #复制目标
@@ -200,7 +200,7 @@ def remove_git_lock():
 def create_daily_dir():
     '''创建每日文件夹'''
     daily_dir = os.path.join(TARGET,time.strftime('%Y.%m.%d'))
-    if get_daily_dir() != daily_dir:
+    if (not os.exists(DAILY_DIR_FILE)) or (get_daily_dir() != daily_dir):
         os.mkdir(daily_dir)
         with open(DAILY_DIR_FILE,'w') as f:
             f.write(daily_dir)
