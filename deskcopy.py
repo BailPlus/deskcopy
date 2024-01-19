@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.1_75
-#2022.11.18-2024.1.5
+#deskcopy 桌面拖入文件自动复制 v1.12.2_76
+#2022.11.18-2024.1.19
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -23,7 +23,7 @@ KILL360SLEEP = 5   #杀死360画报间隔时间
 UPLOADSLEEP = 60    #上传课件间隔时间
 UPGRADE_DELAY = 300 #自动更新延迟启动时间
 
-import os,time,shutil,sys,threading,subprocess
+import os,time,shutil,sys,threading,subprocess,traceback
 
 desktop_path = os.path.join(os.path.expanduser('~'),'Desktop')
 isneedupload = False    #已弃用，在过渡时期防止bug的发生
@@ -228,5 +228,5 @@ def main():
 if __name__ == '__main__':
     try:
         sys.exit(main())
-    except Exception as e:
-        log('F',e)
+    except Exception:
+        log('F',traceback.format_exc())
