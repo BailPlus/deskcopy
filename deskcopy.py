@@ -1,5 +1,5 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.4_81
+#deskcopy 桌面拖入文件自动复制 v1.12.5_82
 #2022.11.18-2024.2.8
 
 TARGET = 'D:\\desktop'  #复制目标
@@ -17,7 +17,6 @@ OPENCOPY_ARGV = '--open'    #打开复制触发选项
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
-KILL360SLEEP = 5   #杀死360画报间隔时间
 UPLOADSLEEP = 60    #上传课件间隔时间
 UPGRADE_DELAY = 300 #自动更新延迟启动时间
 
@@ -105,23 +104,14 @@ filterlst(tuple/False):允许通过的后缀名
                 copy(filesrc,filetarget)
             else:
                 log('I',f'已跳过 {filesrc}')
-def kill360():
-    '''自动杀死360画报'''
-    log('I','开始杀死360画报')
-    while True:
-        cmd('taskkill /f /im 360huabao.exe')
-        time.sleep(KILL360SLEEP)
 def log(logtype:str,logtext:str):
     '''输出日志
 logtype(str):日志类型('D','I','W','E','F')
 logtext(str):日志内容'''
     content = f'[{time.strftime(STRFTIME)}][{__name__}] {logtype}: {logtext}'
     print(content,file=sys.stderr)
-    if (logtype == 'W') and ('360' in logtext):
-        pass
-    else:
-        with open(LOGFILE,'a') as logfile:
-            print(content,file=logfile)
+    with open(LOGFILE,'a') as logfile:
+        print(content,file=logfile)
 def get_filesizes(path:str=None)->list:
     '''获取目录下所有文件大小
 path(str):要获取的目录，默认为工作目录
@@ -212,7 +202,6 @@ def main():
     remove_git_lock()
     create_daily_dir()
     log('I','已启动')
-    threading.Thread(target=kill360).start()
     threading.Thread(target=auto_upgrade).start()
     threading.Thread(target=upload_cached_files).start()
     threading.Thread(target=ruicopy).start()
