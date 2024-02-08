@@ -1,5 +1,5 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.5_82
+#deskcopy 桌面拖入文件自动复制 v1.12.6_83
 #2022.11.18-2024.2.8
 
 TARGET = 'D:\\desktop'  #复制目标
@@ -11,7 +11,6 @@ RUITARGET = r'D:\desktop\高三一轮'  #数学一轮复制目标目录
 NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
 NEED_UPLOAD_FILE = r'D:\deskcopy\need_upload'   #上传信号
 DAILY_DIR_FILE = r'D:\deskcopy\dailydir'    #每日文件夹位置
-UPANCOPY_ALLOW_SUFFIX = ('.doc','.docx','.ppt','.pptx','.pdf')  #U盘复制时允许的后缀名
 UPANCOPY_ARGV = '--upan' #U盘全盘复制触发选项
 OPENCOPY_ARGV = '--open'    #打开复制触发选项
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
@@ -53,7 +52,7 @@ def upancopy():
     os.chdir(UPANPATH)
     target = os.path.join(UPANCOPY_ROOT,time.strftime('upancopy_%Y%m%d%H%M%S'))
     os.mkdir(target)
-    copydir('.',target,UPANCOPY_ALLOW_SUFFIX)
+    copydir('.',target,False)
 def opencopy(filename:str):
     '''打开文件并复制
 filename(str):文件名
