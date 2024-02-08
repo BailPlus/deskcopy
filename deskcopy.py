@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.3.3_80
-#2022.11.18-2024.2.5
+#deskcopy 桌面拖入文件自动复制 v1.12.4_81
+#2022.11.18-2024.2.8
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -8,7 +8,6 @@ UPANPATH = 'E:\\'   #U盘挂载点
 UPANCOPY_ROOT = 'D:\\'  #U盘复制目标目录的父目录
 RUIPATH = r'E:\高三一轮'    #数学一轮复制源文件目录
 RUITARGET = r'D:\desktop\高三一轮'  #数学一轮复制目标目录
-WPS_ENABLE_FILE = r'D:\deskcopy\wps'    #wps启用信号
 NOT_UPGRADE_FILE = r'D:\deskcopy\noup'  #禁用自动更新信号
 NEED_UPLOAD_FILE = r'D:\deskcopy\need_upload'   #上传信号
 DAILY_DIR_FILE = r'D:\deskcopy\dailydir'    #每日文件夹位置
@@ -62,16 +61,13 @@ filename(str):文件名
 '''
     file_suffix = os.path.splitext(filename)[-1][1:]
     if file_suffix in ('doc','docx'):
-        threading.Thread(target=lambda:cmd(f'start winword "{filename}"')).start()
+        threading.Thread(target=lambda:cmd(f'start wps "{filename}"')).start()
     elif file_suffix in ('ppt','pptx'):
-        if os.path.exists(WPS_ENABLE_FILE):
-            threading.Thread(target=lambda:cmd(f'start wpp "{filename}"')).start()
-        else:
-            threading.Thread(target=lambda:cmd(f'start powerpnt "{filename}"')).start()
+        threading.Thread(target=lambda:cmd(f'start wpp "{filename}"')).start()
     elif file_suffix in ('xls','xlsx'):
-        threading.Thread(target=lambda:cmd(f'start excel "{filename}"')).start()
+        threading.Thread(target=lambda:cmd(f'start et "{filename}"')).start()
     elif file_suffix in ('pdf',):
-        threading.Thread(target=lambda:cmd(fr'start C:\Users\SEEWO\AppData\Roaming\secoresdk\360se6\Application\360se "{filename}"')).start()
+        threading.Thread(target=lambda:cmd(fr'start msedge "{filename}"')).start()
     threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py "{filename}"')).start()
     open(NEED_UPLOAD_FILE,'w').close()
 def copy(src:str,dst:str):
