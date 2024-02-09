@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.6_83
-#2022.11.18-2024.2.8
+#deskcopy 桌面拖入文件自动复制 v1.12.7_84
+#2022.11.18-2024.2.9
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -40,7 +40,11 @@ def execute_with_arg():
 def cmd(cmdline:str):
     '''执行系统命令
 cmdline(str):命令行'''
-    res = subprocess.run(cmdline,shell=True)
+    res = subprocess.run(cmdline,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE,
+                         encoding='gb2312',
+                         shell=True)
     if res.returncode == 0:
         log('D',f'命令执行成功: {cmdline}')
     else:
