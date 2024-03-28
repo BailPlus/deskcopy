@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.9_86
-#2022.11.18-2024.3.22
+#deskcopy 桌面拖入文件自动复制 v1.12.10_87
+#2022.11.18-2024.3.28
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -65,11 +65,11 @@ filename(str):文件名
     if file_suffix in ('doc','docx'):
         threading.Thread(target=lambda:cmd(f'start wps "{filename}"')).start()
     elif file_suffix in ('ppt','pptx'):
-        threading.Thread(target=lambda:cmd(f'start wpp "{filename}"')).start()
+        threading.Thread(target=lambda:cmd(fr'start "C:\Program Files (x86)\Seewo\EasiNote5\swenlauncher\swenlauncher.exe" "{filename}"')).start()
     elif file_suffix in ('xls','xlsx'):
         threading.Thread(target=lambda:cmd(f'start et "{filename}"')).start()
     elif file_suffix in ('pdf',):
-        threading.Thread(target=lambda:cmd(fr'start msedge "{filename}"')).start()
+        threading.Thread(target=lambda:cmd(f'start msedge "{filename}"')).start()
     threading.Thread(target=lambda:cmd(f'start pythonw D:\deskcopy\deskcopy.py "{filename}"')).start()
     open(NEED_UPLOAD_FILE,'w').close()
 def copy(src:str,dst:str):
