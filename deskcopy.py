@@ -1,5 +1,5 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.10_87
+#deskcopy 桌面拖入文件自动复制 v1.12.11_88
 #2022.11.18-2024.3.28
 
 TARGET = 'D:\\desktop'  #复制目标
@@ -147,8 +147,8 @@ def upload_cached_files():
     '''上传已缓存的文件（向gitlink）'''
     while True:
         if os.path.exists(NEED_UPLOAD_FILE):
-            cmd(r'D:\deskcopy\pushfile.bat')
             os.remove(NEED_UPLOAD_FILE)
+            cmd(r'D:\deskcopy\pushfile.bat')
             log('I','自动上传完毕')
         time.sleep(UPLOADSLEEP)
 def ruicopy():
