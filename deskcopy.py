@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.11_88
-#2022.11.18-2024.3.28
+#deskcopy 桌面拖入文件自动复制 v1.12.12_89
+#2022.11.18-2024.3.30
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -65,7 +65,7 @@ filename(str):文件名
     if file_suffix in ('doc','docx'):
         threading.Thread(target=lambda:cmd(f'start wps "{filename}"')).start()
     elif file_suffix in ('ppt','pptx'):
-        threading.Thread(target=lambda:cmd(fr'start "C:\Program Files (x86)\Seewo\EasiNote5\swenlauncher\swenlauncher.exe" "{filename}"')).start()
+        threading.Thread(target=lambda:cmd(f'start wpp "{filename}"')).start()
     elif file_suffix in ('xls','xlsx'):
         threading.Thread(target=lambda:cmd(f'start et "{filename}"')).start()
     elif file_suffix in ('pdf',):
