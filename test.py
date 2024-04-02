@@ -1,5 +1,7 @@
 import traceback as err
 from deskcopy import log
+from time import sleep
+sleep(5)
 try:
     import psutil as p
     ps = p.pids()
