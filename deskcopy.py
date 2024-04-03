@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.12.12_89
-#2022.11.18-2024.3.30
+#deskcopy 桌面拖入文件自动复制 v1.13_90
+#2022.11.18-2024.4.3
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -16,10 +16,11 @@ OPENCOPY_ARGV = '--open'    #打开复制触发选项
 STRFTIME = '%Y.%m.%d %H:%M:%S'  #格式化时间格式
 DESKSLEEP = 5   #桌面复制间隔时间
 UPANSLEEP = 5   #U盘检测间隔时间
+PROCSLEEP = 60  #进程复制间隔时间
 UPLOADSLEEP = 60    #上传课件间隔时间
 UPGRADE_DELAY = 300 #自动更新延迟启动时间
 
-import os,time,shutil,sys,threading,subprocess,traceback
+import os,time,shutil,sys,threading,subprocess,traceback,psutil
 
 desktop_path = os.path.join(os.path.expanduser('~'),'Desktop')
 isneedupload = False    #已弃用，在过渡时期防止bug的发生
@@ -200,6 +201,36 @@ def get_daily_dir()->str:
 返回值:每日文件夹路径，即DAILY_DIR_FILE文件内容(str)'''
     with open(DAILY_DIR_FILE) as f:
         return f.read()
+def proccopy():
+    '''进程复制
+检测wps.exe进程并复制其启动参数中附带的文件'''
+    recorded_wps_pids = [] # 已记录的wps pid
+    while True:
+        #获取pid列表
+        ps = psutil.pids()
+        #获取进程信息
+        for i in ps:
+            proc = psutil.Process(i)
+            try:
+                procname = proc.name()
+                proccmd = proc.cmdline()
+            except psutil.AccessDenied:
+                pass
+        #判定为wps进程
+            if (procname == 'wps.exe') and (i not in recorded_wps_pids):
+                #记录pid
+                recorded_wps_pids.append(i)
+                #尝试提取文件路径
+                try:
+                    filepath = proccmd[3]
+                except IndexError:
+                    log('W',f'“{" ".join(proccmd)}”貌似不是wps用于打开文件的进程')
+                    continue
+                else:
+                    log('I',f'找到wps打开文件进程：{" ".join(proccmd)}')
+                #复制文件
+                copy(filepath,get_daily_dir())
+        time.sleep(PROCSLEEP)
 def main():
     execute_with_arg()
     remove_git_lock()
@@ -209,6 +240,7 @@ def main():
     threading.Thread(target=upload_cached_files).start()
     threading.Thread(target=ruicopy).start()
     threading.Thread(target=openupan).start()
+    threading.Thread(target=proccopy).start()
     deskcopy()
     return 0
 
