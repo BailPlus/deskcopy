@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.13_90
-#2022.11.18-2024.4.3
+#deskcopy 桌面拖入文件自动复制 v1.13.1_91
+#2022.11.18-2024.4.6
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -210,11 +210,11 @@ def proccopy():
         ps = psutil.pids()
         #获取进程信息
         for i in ps:
-            proc = psutil.Process(i)
             try:
+                proc = psutil.Process(i)
                 procname = proc.name()
                 proccmd = proc.cmdline()
-            except psutil.AccessDenied:
+            except psutil.AccessDenied,psutil.NoSuchProcess:
                 pass
         #判定为wps进程
             if (procname == 'wps.exe') and (i not in recorded_wps_pids):
