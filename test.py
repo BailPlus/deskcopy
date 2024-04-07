@@ -7,7 +7,12 @@ try:
     ps = p.pids()
     log('D',str(ps))
     for i in ps:
-        pp = p.Process(i)
-        log('D',pp.cmdline())
+        try:
+            pp = p.Process(i)
+            c = pp.cmdline()
+            n = pp.name()
+        except p.AccessDenied:
+            pass
+        log('D',str(c)+'\n'+str(n))
 except:
     log('F',err.format_exc())
