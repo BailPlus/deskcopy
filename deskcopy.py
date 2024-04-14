@@ -1,6 +1,6 @@
 #Copyright Bail 2022-2024
-#deskcopy 桌面拖入文件自动复制 v1.13.3_93
-#2022.11.18-2024.4.7
+#deskcopy 桌面拖入文件自动复制 v1.13.4_94
+#2022.11.18-2024.4.14
 
 TARGET = 'D:\\desktop'  #复制目标
 LOGFILE = 'D:\\desktop\\deskcopy.log'    #日志文件
@@ -229,17 +229,9 @@ def proccopy():
                 else:
                     log('W',f'“{" ".join(proccmd)}”貌似不是wps用于打开文件的进程')
                     continue
-                '''
-                try:
-                    filepath = proccmd[3]
-                except IndexError:
-                    log('W',f'“{" ".join(proccmd)}”貌似不是wps用于打开文件的进程')
-                    continue
-                else:
-                    log('I',f'找到wps打开文件进程：{" ".join(proccmd)}')
-                '''
                 #复制文件
                 copy(filepath,get_daily_dir())
+                open(NEED_UPLOAD_FILE,'w').close()
         time.sleep(PROCSLEEP)
 def main():
     execute_with_arg()
