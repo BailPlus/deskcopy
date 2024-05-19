@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/python
 #Copyright Bail 2024
-#deskcopy:photocopy 相册新增照片自动复制 v1.0_1
+#deskcopy:photocopy 相册新增照片自动复制 v1.0.1_2
 #2024.5.18
 
 TARGET = r'/data/data/com.termux/files/home/Photos/Camera/'  #复制目标
@@ -34,12 +34,17 @@ logtext(str):日志内容'''
         print(content,file=logfile)
 def deskcopy():
     '''桌面复制'''
+    copied_files = [i for i in os.listdir(TARGET)]
+    log('I',f'''以下文件已存在：
+{"""
+""".join(copied_files)}''')
     while True:
         files = os.listdir()
         for i in files:
-            if time.strftime(FILEDATE) in i:
+            if (time.strftime(FILEDATE) in i) and (i not in copied_files):
                 log('I',f'已触发相册复制:{i}')
                 copy(i,TARGET)
+                copied_files.append(i)
         time.sleep(DESKSLEEP)
 def main():
     log('I','已启动')
